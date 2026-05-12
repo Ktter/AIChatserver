@@ -1,0 +1,3 @@
+/home/wx/Documents/my_workspace/CppAIService/AIApps/ChatServer/src/build/CMakeFiles/onnx_cv_test.dir
+/home/wx/Documents/my_workspace/CppAIService/AIApps/ChatServer/src/build/CMakeFiles/edit_cache.dir
+/home/wx/Documents/my_workspace/CppAIService/AIApps/ChatServer/src/build/CMakeFiles/rebuild_cache.dir

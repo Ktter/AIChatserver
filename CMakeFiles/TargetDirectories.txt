@@ -1,0 +1,4 @@
+/home/wx/Documents/my_workspace/CppAIService/CMakeFiles/http_server.dir
+/home/wx/Documents/my_workspace/CppAIService/CMakeFiles/test_inferencer.dir
+/home/wx/Documents/my_workspace/CppAIService/CMakeFiles/edit_cache.dir
+/home/wx/Documents/my_workspace/CppAIService/CMakeFiles/rebuild_cache.dir

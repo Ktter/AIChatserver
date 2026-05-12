@@ -1,0 +1,106 @@
+name: C++ CI/CD
+
+on:
+  push:
+    branches: [main, master, develop]
+    tags: ['v*']               # 打 v1.0.0 标签时触发 Release
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # ========== Job 1: 编译 + 测试 ==========
+  build-and-test:
+    runs-on: ubuntu-22.04
+    
+    strategy:
+      matrix:
+        build_type: [Release, Debug]
+
+    steps:
+      # 1. 拉代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 装系统依赖（OpenCV + 构建工具）
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake ninja-build \
+            libopencv-dev \
+            libgtest-dev \
+            build-essential
+
+      # 3. 编译安装 GTest（Ubuntu 22.04 的 apt 包需要手动编译）
+      - name: Build GTest
+        run: |
+          cd /usr/src/googletest
+          sudo cmake -B build -G Ninja
+          sudo cmake --build build
+          sudo cmake --install build
+
+      # 4. 下载 ONNX Runtime（官方预编译二进制）
+      - name: Install ONNX Runtime
+        run: |
+          ORT_VERSION="1.17.1"
+          wget -q https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-linux-x64-${ORT_VERSION}.tgz
+          tar -xzf onnxruntime-linux-x64-${ORT_VERSION}.tgz
+          sudo mv onnxruntime-linux-x64-${ORT_VERSION} /usr/local/onnxruntime
+
+      # 5. CMake 配置
+      - name: Configure
+        run: |
+          cmake -B build-${{ matrix.build_type }} -G Ninja \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DONNXRUNTIME_ROOT=/usr/local/onnxruntime \
+            -DBUILD_TESTING=ON
+
+      # 6. 编译
+      - name: Build
+        run: cmake --build build-${{ matrix.build_type }} --parallel $(nproc)
+
+      # 7. 运行测试
+      - name: Test
+        working-directory: build-${{ matrix.build_type }}
+        run: ctest --output-on-failure
+
+      # 8. 上传构建产物（可在 GitHub 网页下载）
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: faster-rcnn-${{ matrix.build_type }}
+          path: |
+            build-${{ matrix.build_type }}/faster_rcnn_demo
+            build-${{ matrix.build_type }}/lib*.so
+
+  # ========== Job 2: 自动发 Release（只有打 tag 时执行） ==========
+  release:
+    needs: build-and-test      # 等上面的编译测试全通过
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: faster-rcnn-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Package
+        run: |
+          mkdir -p package
+          cp artifacts/faster_rcnn_demo package/
+          cp -r models package/          # 把模型也打包进去
+          tar -czf faster-rcnn-linux-amd64.tar.gz -C package .
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: faster-rcnn-linux-amd64.tar.gz
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "CMake: Configure",
+            "command": "cd /home/wx/Documents/my_workspace/CppAIService/build && CC=/usr/bin/gcc CXX=/usr/bin/g++ cmake ..",
+            "options": {
+                "cwd": "/home/wx/Documents/my_workspace/CppAIService/build"
+            },
+            "problemMatcher": ["$cmake"],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "CMake: Build",
+            "command": "cd /home/wx/Documents/my_workspace/CppAIService/build && make -j4",
+            "options": {
+                "cwd": "/home/wx/Documents/my_workspace/CppAIService/build"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "CMake: Build Test",
+            "command": "cd /home/wx/Documents/my_workspace/CppAIService/AIApps/ChatServer/src/build && make -j4",
+            "options": {
+                "cwd": "/home/wx/Documents/my_workspace/CppAIService/AIApps/ChatServer/src/build"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": "build"
+        }
+    ]
+}

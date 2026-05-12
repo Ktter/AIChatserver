@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/HttpServer/include",
+                "${workspaceFolder}/AIApps/ChatServer/include",
+                "/usr/include/mysql-cppconn-8",
+                "/usr/include/cppconn",
+                "/usr/include/mysql",
+                "/usr/include/opencv4",
+                "/usr/local/include",
+                "/home/wx/muduo",
+                "/home/wx/Documents/my_workspace/CppAIService/third_party/onnxruntime/onnxruntime-linux-x64-1.19.2/include",
+                "/home/wx/Documents/my_workspace/CppAIService/third_party/SimpleAmqpClient"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
