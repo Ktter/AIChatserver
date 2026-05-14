@@ -231,7 +231,8 @@ std::any DetectionAndSegmentInference::PredictFromFile(const std::string& img_pa
 
 std::string DetectionAndSegmentInference::GetLabelName(const size_t label) const {
     if (label < 0 || label > labels_.size()) {
-        throw std::runtime_error("[DetectionAndSegmentInference] Pass label params invalid.");
+        throw std::runtime_error(
+            "[DetectionAndSegmentInference] Pass label params invalid.");
     }
     return labels_[label];
 }

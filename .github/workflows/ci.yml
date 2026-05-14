@@ -29,7 +29,9 @@ jobs:
             cmake ninja-build \
             libopencv-dev \
             libgtest-dev \
-            build-essential
+            build-essential \
+            libcurl4-openssl-dev \
+            pkg-config
 
       # 3. 编译安装 GTest（Ubuntu 22.04 的 apt 包需要手动编译）
       - name: Build GTest
